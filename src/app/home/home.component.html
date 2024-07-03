@@ -1,0 +1,18 @@
+<header>
+  <h1>Quicklists</h1>
+  <button (click)="checklistBeingEdited.set({})" >Add Checklist</button>
+</header>
+
+<app-modal [isOpen]="!!checklistBeingEdited()">
+  <ng-template>
+    <app-form-modal
+      [title]="
+        checklistBeingEdited()?.title
+          ? checklistBeingEdited()!.title!
+          : 'Add Checklist'
+      "
+      [formGroup]="checklistForm"
+      (close)="checklistBeingEdited.set(null)"
+    />
+  </ng-template>
+</app-modal>
