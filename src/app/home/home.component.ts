@@ -22,13 +22,13 @@ export default class HomeComponent {
     title: [''],
   })
 
-  // constructor() {
-  //   effect(() => {
-  //     const checklist = this.checklistBeingEdited()
+  constructor() {
+    effect(() => {
+      const checklist = this.checklistBeingEdited()
 
-  //     if(!checklist) {
-  //       this.checklistForm.reset()
-  //     }
-  //   })
-  // }
+      if(!checklist) {
+        this.checklistForm.reset()
+      }
+    })
+  }
 }
