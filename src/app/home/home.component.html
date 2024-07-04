@@ -11,10 +11,9 @@
 <app-modal [isOpen]="!!checklistBeingEdited()">
   <ng-template>
     <app-form-modal
-      [title]="
-        checklistBeingEdited()?.title
-          ? checklistBeingEdited()!.title!
-          : 'Add Checklist'
+      [title]="checklistBeingEdited()?.title
+        ? checklistBeingEdited()!.title!
+        : 'Add Checklist'
       "
       [formGroup]="checklistForm"
       (close)="checklistBeingEdited.set(null)"

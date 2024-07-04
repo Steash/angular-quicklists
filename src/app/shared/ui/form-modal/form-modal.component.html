@@ -8,7 +8,7 @@
     @for (control of formGroup().controls | keyvalue; track control.key) {
       <div>
         <label [for]="control.key">{{ control.key }}</label>
-        <input type="text" formControlName="control.key" [id]="control.key">
+        <input type="text" [formControlName]="control.key" [id]="control.key">
       </div>
     }
     <button type="submit">Save</button>
