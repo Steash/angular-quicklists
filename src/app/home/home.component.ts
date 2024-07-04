@@ -3,15 +3,18 @@ import { ModalComponent } from '../shared/ui/modal.component';
 import { Checklist } from '../shared/interfaces/checklist';
 import { FormBuilder } from '@angular/forms';
 import { FormModalComponent } from '../shared/ui/form-modal/form-modal.component';
+import { ChecklistService } from '../shared/data-access/checklist.service';
+import { ChecklistListComponent } from './ui/checklist-list/checklist-list.component';
 
 @Component({
   standalone: true,
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [ModalComponent, FormModalComponent],
+  imports: [ModalComponent, FormModalComponent, ChecklistListComponent],
 })
 export default class HomeComponent {
   formBuilder = inject(FormBuilder)
+  checklistService = inject(ChecklistService)
 
   checklistBeingEdited = signal<Partial<Checklist> | null>(null)
 
@@ -19,13 +22,13 @@ export default class HomeComponent {
     title: [''],
   })
 
-  constructor() {
-    effect(() => {
-      const checklist = this.checklistBeingEdited()
+  // constructor() {
+  //   effect(() => {
+  //     const checklist = this.checklistBeingEdited()
 
-      if(!checklist) {
-        this.checklistForm.reset()
-      }
-    })
-  }
+  //     if(!checklist) {
+  //       this.checklistForm.reset()
+  //     }
+  //   })
+  // }
 }
