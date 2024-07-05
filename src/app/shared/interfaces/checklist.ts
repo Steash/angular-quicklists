@@ -6,3 +6,4 @@ export interface Checklist {
 export type AddChecklist = Omit<Checklist, 'id'>
 export type EditChecklist = { id: Checklist['id']; data: AddChecklist }
 export type RemoveChecklist = Checklist['id']
+export type ResetChecklist = Checklist['id']

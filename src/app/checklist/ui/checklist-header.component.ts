@@ -1,7 +1,6 @@
 import { Component, input, output } from '@angular/core';
-import { Checklist } from '../../shared/interfaces/checklist';
+import { Checklist, ResetChecklist } from '../../shared/interfaces/checklist';
 import { RouterLink } from '@angular/router';
-import { ToggleChecklistItem } from '../../shared/interfaces/checklist-item';
 
 @Component({
   selector: 'app-checklist-header',
@@ -23,5 +22,5 @@ import { ToggleChecklistItem } from '../../shared/interfaces/checklist-item';
 export class ChecklistHeaderComponent {
   checklist = input.required<Checklist>()
   addItem = output()
-  resetChecklist = output<ToggleChecklistItem>()
+  resetChecklist = output<ResetChecklist>()
 }
