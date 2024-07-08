@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from "@angular/core";
-import { AddChecklistItem, ChecklistItem, RemoveChecklistItem, ToggleChecklistItem } from "../../shared/interfaces/checklist-item";
+import { AddChecklistItem, ChecklistItem, EditChecklistItem, RemoveChecklistItem, ToggleChecklistItem } from "../../shared/interfaces/checklist-item";
 import { Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { StorageService } from "../../shared/data-access/storage.service";
@@ -30,6 +30,8 @@ export class ChecklistItemService {
 
     // sources
     add$ = new Subject<AddChecklistItem>()
+    edit$ = new Subject<EditChecklistItem>()
+    remove$ = new Subject<RemoveChecklistItem>()
     toggle$ = new Subject<ToggleChecklistItem>()
     reset$ = new Subject<ToggleChecklistItem>()
     private checklistItemsLoaded$ = this.storageService.loadChecklistItems()
@@ -49,6 +51,24 @@ export class ChecklistItemService {
                         checked: false
                     }
                 ]
+            }))
+        )
+
+        this.edit$.pipe(takeUntilDestroyed()).subscribe((update) => 
+            this.state.update((state) => ({
+                ...state,
+                checklistItems: state.checklistItems.map((item) => 
+                    item.id === update.id
+                        ? { ...item, title: update.data.title }
+                        : item
+                )
+            }))
+        )
+
+        this.remove$.pipe(takeUntilDestroyed()).subscribe((id) => 
+            this.state.update((state) => ({
+                ...state,
+                checklistItems: state.checklistItems.filter(item => item.id !== id)
             }))
         )
 
