@@ -27,7 +27,7 @@ export default class ChecklistComponent {
 
   params = toSignal(this.route.paramMap)
 
-  checklist = computed(() => 
+  checklist = computed(() =>
     this.checklistService.checklists()
       .find((checklist) => checklist.id === this.params()?.get('id'))
   )
@@ -36,7 +36,7 @@ export default class ChecklistComponent {
     title: ['']
   })
 
-  items = computed(() => 
+  items = computed(() =>
     this.checklistItemService.checklistItems()
       .filter((item) => item.checklistId === this.params()?.get('id'))
   )
@@ -47,6 +47,10 @@ export default class ChecklistComponent {
 
       if (!checklistItem) {
         this.checklistItemForm.reset()
+      } else {
+        this.checklistItemForm.patchValue({
+          title: checklistItem.title
+        })
       }
     })
   }

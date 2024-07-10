@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ChecklistItem, ToggleChecklistItem } from '../../shared/interfaces/checklist-item';
+import { ChecklistItem, RemoveChecklistItem, ToggleChecklistItem } from '../../shared/interfaces/checklist-item';
 
 @Component({
   selector: 'app-checklist-item-list',
@@ -19,6 +19,8 @@ import { ChecklistItem, ToggleChecklistItem } from '../../shared/interfaces/chec
             </div>
             <div>
               <button (click)="toggle.emit(item.id)">Toggle</button>
+              <button (click)="edit.emit(item)">Edit</button>
+              <button (click)="delete.emit(item.id)">Delete</button>
             </div>
           </li>
         } @empty {
@@ -35,4 +37,6 @@ import { ChecklistItem, ToggleChecklistItem } from '../../shared/interfaces/chec
 export class ChecklistItemListComponent {
   checklistItems = input.required<ChecklistItem[]>()
   toggle = output<ToggleChecklistItem>()
+  edit = output<ChecklistItem>()
+  delete = output<RemoveChecklistItem>()
 }

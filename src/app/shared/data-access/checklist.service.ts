@@ -1,8 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { Subject } from 'rxjs'
-import { AddChecklist, Checklist } from '../interfaces/checklist'
+import { AddChecklist, Checklist, EditChecklist } from '../interfaces/checklist'
 import { StorageService } from './storage.service';
+import { ChecklistItemService } from '../../checklist/data-access/checklist-item.service';
 
 export interface ChecklistsState {
   checklists: Checklist[]
@@ -13,6 +14,7 @@ export interface ChecklistsState {
 @Injectable({ providedIn: 'root' })
 export class ChecklistService {
   storageService = inject(StorageService)
+  checklistItemService = inject(ChecklistItemService)
 
   // state
   private state = signal<ChecklistsState>({
@@ -27,6 +29,8 @@ export class ChecklistService {
 
   // sources
   add$ = new Subject<AddChecklist>()
+  edit$ = new Subject<EditChecklist>()
+  remove$ = this.checklistItemService.checklistRemoved$
   private checklistsLoaded$ = this.storageService.loadChecklists()
 
   constructor() {
@@ -38,8 +42,26 @@ export class ChecklistService {
       }))
     )
 
+    this.edit$.pipe(takeUntilDestroyed()).subscribe((update) =>
+      this.state.update((state) => ({
+        ...state,
+        checklists: state.checklists.map((checklist) =>
+          checklist.id === update.id
+            ? { ...checklist, title: update.data.title }
+            : checklist
+        )
+      }))
+    )
+
+    this.remove$.pipe(takeUntilDestroyed()).subscribe((id) =>
+      this.state.update((state) => ({
+        ...state,
+        checklists: state.checklists.filter(checklist => checklist.id !== id)
+      }))
+    )
+
     this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe({
-      next: (checklists) => 
+      next: (checklists) =>
         this.state.update((state) => ({
           ...state,
           checklists,
@@ -48,7 +70,7 @@ export class ChecklistService {
       error: (err) => this.state.update((state) => ({ ...state, error: err }))
     })
 
-    // effects 
+    // effects
     effect(() => {
       if (this.loaded()) {
         this.storageService.saveChecklists(this.checklists())

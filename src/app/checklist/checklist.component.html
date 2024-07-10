@@ -1,5 +1,5 @@
 @if (checklist(); as checklist) {
-  <app-checklist-header 
+  <app-checklist-header
     [checklist]="checklist"
     (addItem)="checklistItemBeingEdited.set({})"
     (resetChecklist)="checklistItemService.reset$.next($event)"
@@ -7,9 +7,11 @@
 }
 
 <section>
-  <app-checklist-item-list 
+  <app-checklist-item-list
     [checklistItems]="items()"
     (toggle)="checklistItemService.toggle$.next($event)"
+    (edit)="checklistItemBeingEdited.set($event)"
+    (delete)="checklistItemService.remove$.next($event)"
   />
 </section>
 
@@ -22,11 +24,17 @@
       "
       [formGroup]="checklistItemForm"
       (close)="checklistItemBeingEdited.set(null)"
-      (save)="checklistItemService.add$.next({
+      (save)="
+        checklistItemBeingEdited()?.id
+        ? checklistItemService.edit$.next({
+          id: checklistItemBeingEdited()!.id!,
+          data: checklistItemForm.getRawValue()
+        })
+        : checklistItemService.add$.next({
           item: checklistItemForm.getRawValue(),
           checklistId: checklist()?.id!
-      })"
+        })
+      "
     />
   </ng-template>
 </app-modal>
-  

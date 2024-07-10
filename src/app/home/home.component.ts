@@ -26,8 +26,12 @@ export default class HomeComponent {
     effect(() => {
       const checklist = this.checklistBeingEdited()
 
-      if(!checklist) {
+      if (!checklist) {
         this.checklistForm.reset()
+      } else {
+        this.checklistForm.patchValue({
+          title: checklist.title
+        })
       }
     })
   }

@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, input } from '@angular/core';
-import { Checklist } from '../../../shared/interfaces/checklist';
+import { Component, OnInit, inject, input, output } from '@angular/core';
+import { Checklist, EditChecklist, RemoveChecklist } from '../../../shared/interfaces/checklist';
 import { RouterLink } from '@angular/router';
 import { ChecklistService } from '../../../shared/data-access/checklist.service';
 
@@ -14,6 +14,10 @@ import { ChecklistService } from '../../../shared/data-access/checklist.service'
           <a routerLink="/checklist/{{ checklist.id }}">
             {{ checklist.title }}
           </a>
+          <div>
+            <button (click)="edit.emit(checklist)">Edit</button>
+            <button (click)="delete.emit(checklist.id)">Remove</button>
+          </div>
         </li>
       } @empty {
         <p>Click the add button to create your first checklist!</p>
@@ -24,7 +28,9 @@ import { ChecklistService } from '../../../shared/data-access/checklist.service'
 })
 export class ChecklistListComponent implements OnInit {
   checklists = input.required<Checklist[]>()
-  
+  edit = output<Checklist>()
+  delete = output<RemoveChecklist>()
+
   ngOnInit() {
     console.log(this.checklists);
   }
