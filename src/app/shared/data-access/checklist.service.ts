@@ -1,9 +1,10 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { Subject } from 'rxjs'
+import { Subject, catchError, concatMap } from 'rxjs'
 import { AddChecklist, Checklist, EditChecklist } from '../interfaces/checklist'
 import { StorageService } from './storage.service';
 import { ChecklistItemService } from '../../checklist/data-access/checklist-item.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface ChecklistsState {
   checklists: Checklist[]
@@ -15,6 +16,7 @@ export interface ChecklistsState {
 export class ChecklistService {
   storageService = inject(StorageService)
   checklistItemService = inject(ChecklistItemService)
+  http = inject(HttpClient)
 
   // state
   private state = signal<ChecklistsState>({
@@ -31,16 +33,49 @@ export class ChecklistService {
   add$ = new Subject<AddChecklist>()
   edit$ = new Subject<EditChecklist>()
   remove$ = this.checklistItemService.checklistRemoved$
-  private checklistsLoaded$ = this.storageService.loadChecklists()
+  // private checklistsLoaded$ = this.storageService.loadChecklists()
+  private checklistsLoaded$ = this.http
+    .get<Checklist[]>(`${environment.API_URL}/checklists`)
+    .pipe(catchError((err) => this.handleError(err)))
+
 
   constructor() {
     // reducers
-    this.add$.pipe(takeUntilDestroyed()).subscribe((checklist) =>
+    this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe((checklists) =>
       this.state.update((state) => ({
         ...state,
-        checklists: [...state.checklists, this.addIdToChecklist(checklist)]
+        checklists,
+        loaded: true
       }))
     )
+
+    // this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe({
+    //   next: (checklists) =>
+    //     this.state.update((state) => ({
+    //       ...state,
+    //       checklists,
+    //       loaded: true
+    //     })),
+    //   error: (err) => this.state.update((state) => ({ ...state, error: err }))
+    // })
+
+    // this.add$.pipe(takeUntilDestroyed()).subscribe((checklist) =>
+    //   this.state.update((state) => ({
+    //     ...state,
+    //     checklists: [...state.checklists, this.addIdToChecklist(checklist)]
+    //   }))
+    // )
+
+    this.add$
+      .pipe(
+        concatMap((addCheckList) =>
+          this.http
+            .post(`${environent.API_URL}/checklists`, JSON.stringify(addCheckList))
+            .pipe(catchError((err) => this.handleError(err)))
+        ),
+        takeUntilDestroyed()
+      )
+      .subscribe()
 
     this.edit$.pipe(takeUntilDestroyed()).subscribe((update) =>
       this.state.update((state) => ({
@@ -59,16 +94,6 @@ export class ChecklistService {
         checklists: state.checklists.filter(checklist => checklist.id !== id)
       }))
     )
-
-    this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe({
-      next: (checklists) =>
-        this.state.update((state) => ({
-          ...state,
-          checklists,
-          loaded: true
-        })),
-      error: (err) => this.state.update((state) => ({ ...state, error: err }))
-    })
 
     // effects
     effect(() => {
@@ -100,5 +125,9 @@ export class ChecklistService {
     }
 
     return slug
+  }
+
+  private handleError(error: Error) {
+
   }
 }
