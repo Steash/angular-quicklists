@@ -3,6 +3,7 @@ import { AddChecklistItem, ChecklistItem, EditChecklistItem, RemoveChecklistItem
 import { Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { StorageService } from "../../shared/data-access/storage.service";
+import { RemoveChecklist } from "../../shared/interfaces/checklist";
 
 
 export interface ChecklistItemsState {
@@ -32,6 +33,7 @@ export class ChecklistItemService {
     add$ = new Subject<AddChecklistItem>()
     edit$ = new Subject<EditChecklistItem>()
     remove$ = new Subject<RemoveChecklistItem>()
+    checklistRemoved$ = new Subject<RemoveChecklist>()
     toggle$ = new Subject<ToggleChecklistItem>()
     reset$ = new Subject<ToggleChecklistItem>()
     private checklistItemsLoaded$ = this.storageService.loadChecklistItems()
