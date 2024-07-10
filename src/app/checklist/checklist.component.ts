@@ -15,7 +15,13 @@ import { ChecklistItemListComponent } from './ui/checklist-item-list.component'
   standalone: true,
   imports: [ChecklistHeaderComponent, ModalComponent, FormModalComponent, ChecklistItemListComponent],
   templateUrl: './checklist.component.html',
-  styles: ``
+  styles: [
+    `
+      button {
+        margin-left: 1rem;
+      }
+    `,
+  ],
 })
 export default class ChecklistComponent {
   checklistService = inject(ChecklistService)
