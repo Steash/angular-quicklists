@@ -23,7 +23,7 @@ import { ChecklistItemListComponent } from './ui/checklist-item-list.component'
     `,
   ],
 })
-export default class ChecklistComponent {
+export class ChecklistComponent {
   checklistService = inject(ChecklistService)
   checklistItemService = inject(ChecklistItemService)
   route = inject(ActivatedRoute)

@@ -5,14 +5,15 @@ import { FormBuilder } from '@angular/forms';
 import { FormModalComponent } from '../shared/ui/form-modal/form-modal.component';
 import { ChecklistService } from '../shared/data-access/checklist.service';
 import { ChecklistListComponent } from './ui/checklist-list/checklist-list.component';
+import { NavbarComponent } from '../shared/ui/navbar/navbar.component';
 
 @Component({
   standalone: true,
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [ModalComponent, FormModalComponent, ChecklistListComponent],
+  imports: [ModalComponent, FormModalComponent, ChecklistListComponent, NavbarComponent],
 })
-export default class HomeComponent {
+export class HomeComponent {
   formBuilder = inject(FormBuilder)
   checklistService = inject(ChecklistService)
 
