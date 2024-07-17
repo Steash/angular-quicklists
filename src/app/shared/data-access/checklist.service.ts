@@ -34,21 +34,8 @@ export class ChecklistService {
   edit$ = new Subject<EditChecklist>()
   remove$ = this.checklistItemService.checklistRemoved$
   private checklistsLoaded$ = this.storageService.loadChecklists()
-  // private checklistsLoaded$ = this.http
-  //   .get<Checklist[]>(`${environment.API_URL}/checklists`)
-  //   .pipe(catchError((err) => this.handleError(err)))
-
 
   constructor() {
-    // // reducers
-    // this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe((checklists) =>
-    //   this.state.update((state) => ({
-    //     ...state,
-    //     checklists,
-    //     loaded: true
-    //   }))
-    // )
-
     this.checklistsLoaded$.pipe(takeUntilDestroyed()).subscribe({
       next: (checklists) =>
         this.state.update((state) => ({
@@ -62,20 +49,9 @@ export class ChecklistService {
     this.add$.pipe(takeUntilDestroyed()).subscribe((checklist) =>
       this.state.update((state) => ({
         ...state,
-        checklists: [...state.checklists, this.addIdToChecklist(checklist)]
+        checklists: [...state.checklists, this.addIdAndDateToChecklist(checklist)]
       }))
     )
-
-    // this.add$
-    //   .pipe(
-    //     concatMap((addCheckList) =>
-    //       this.http
-    //         .post(`${environent.API_URL}/checklists`, JSON.stringify(addCheckList))
-    //         .pipe(catchError((err) => this.handleError(err)))
-    //     ),
-    //     takeUntilDestroyed()
-    //   )
-    //   .subscribe()
 
     this.edit$.pipe(takeUntilDestroyed()).subscribe((update) =>
       this.state.update((state) => ({
@@ -103,10 +79,11 @@ export class ChecklistService {
     })
   }
 
-  private addIdToChecklist(checklist: AddChecklist) {
+  private addIdAndDateToChecklist(checklist: AddChecklist) {
     return {
       ...checklist,
-      id: this.generateSlug(checklist.title)
+      id: this.generateSlug(checklist.title),
+      creationDate: new Date()
     }
   }
 
@@ -126,8 +103,4 @@ export class ChecklistService {
 
     return slug
   }
-
-  // private handleError(error: Error) {
-
-  // }
 }

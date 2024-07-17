@@ -20,6 +20,8 @@ export default class HomeComponent {
 
   checklistForm = this.formBuilder.nonNullable.group({
     title: [''],
+    description: [''],
+    endDate: [null as Date | null],
   })
 
   constructor() {
@@ -30,9 +32,30 @@ export default class HomeComponent {
         this.checklistForm.reset()
       } else {
         this.checklistForm.patchValue({
-          title: checklist.title
+          title: checklist.title,
+          description: checklist.description || '',
+          endDate: checklist.endDate ? new Date(checklist.endDate) : null
         })
       }
     })
+  }
+
+  onSave() {
+    const checklist = this.checklistBeingEdited()
+    const formValue = this.checklistForm.getRawValue()
+
+    if (checklist?.id) {
+      this.checklistService.edit$.next({
+        id: checklist!.id!,
+        data: formValue
+      })
+    } else {
+      this.checklistService.add$.next({
+        ...formValue
+      })
+    }
+
+    
+      
   }
 }

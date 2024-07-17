@@ -2,11 +2,12 @@ import { Component, OnInit, inject, input, output } from '@angular/core';
 import { Checklist, EditChecklist, RemoveChecklist } from '../../../shared/interfaces/checklist';
 import { RouterLink } from '@angular/router';
 import { ChecklistService } from '../../../shared/data-access/checklist.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-checklist-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <ul>
       @for (checklist of checklists(); track checklist.id) {
@@ -14,6 +15,9 @@ import { ChecklistService } from '../../../shared/data-access/checklist.service'
           <a routerLink="/checklist/{{ checklist.id }}">
             {{ checklist.title }}
           </a>
+          <p>Created on: {{ checklist.creationDate | date }}</p>
+          <p *ngIf="checklist.description">Description: {{ checklist.description }}</p>
+          <p *ngIf="checklist.endDate">Ends on: {{ checklist.endDate | date }}</p>
           <div>
             <button (click)="edit.emit(checklist)">Edit</button>
             <button (click)="delete.emit(checklist.id)">Remove</button>
