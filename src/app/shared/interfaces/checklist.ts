@@ -2,8 +2,8 @@ export interface Checklist {
   id: string
   title: string
   creationDate: Date
-  description?: string // Optional field
   endDate?: Date | null // Optional field
+  description?: string // Optional field
 }
 
 export type AddChecklist = Omit<Checklist, 'id'| 'creationDate'>

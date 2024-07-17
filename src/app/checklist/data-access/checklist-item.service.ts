@@ -50,7 +50,8 @@ export class ChecklistItemService {
             ...checklistItem.item,
             id: Date.now().toString(),
             checklistId: checklistItem.checklistId,
-            checked: false
+            checked: false,
+            creationDate: new Date()
           }
         ]
       }))

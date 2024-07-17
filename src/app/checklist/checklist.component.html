@@ -24,17 +24,7 @@
       "
       [formGroup]="checklistItemForm"
       (close)="checklistItemBeingEdited.set(null)"
-      (save)="
-        checklistItemBeingEdited()?.id
-        ? checklistItemService.edit$.next({
-          id: checklistItemBeingEdited()!.id!,
-          data: checklistItemForm.getRawValue()
-        })
-        : checklistItemService.add$.next({
-          item: checklistItemForm.getRawValue(),
-          checklistId: checklist()?.id!
-        })
-      "
+      (save)="onSave()"
     />
   </ng-template>
 </app-modal>

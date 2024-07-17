@@ -39,7 +39,9 @@ export default class ChecklistComponent {
   )
 
   checklistItemForm = this.formBuilder.nonNullable.group({
-    title: ['']
+    title: [''],
+    description: [''],
+    endDate: [null as Date | null]
   })
 
   items = computed(() =>
@@ -55,9 +57,29 @@ export default class ChecklistComponent {
         this.checklistItemForm.reset()
       } else {
         this.checklistItemForm.patchValue({
-          title: checklistItem.title
+          title: checklistItem.title,
+          description: checklistItem.description || '',
+          endDate: checklistItem.endDate ? new Date(checklistItem.endDate) : null
         })
       }
     })
+  }
+
+  onSave() {
+    const checklistItem = this.checklistItemBeingEdited()
+    const formValue = this.checklistItemForm.getRawValue()
+    
+    if (checklistItem?.id) {
+      this.checklistItemService.edit$.next({
+        id: checklistItem!.id!,
+        data: formValue
+      })
+      
+    } else {
+      this.checklistItemService.add$.next({
+        item: formValue,
+        checklistId: this.checklist()?.id!
+      })
+    }
   }
 }

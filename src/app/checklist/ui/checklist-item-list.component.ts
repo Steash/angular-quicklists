@@ -1,11 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChecklistItem, RemoveChecklistItem, ToggleChecklistItem } from '../../shared/interfaces/checklist-item';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-checklist-item-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <section>
       <ul>
@@ -15,7 +16,10 @@ import { ChecklistItem, RemoveChecklistItem, ToggleChecklistItem } from '../../s
               @if (item.checked) {
                 <span>✅</span>
               }
-              {{ item.title}}
+              {{ item.title }}
+              <p>{{ item.description }}</p>
+              <p>Creation date: {{ item.creationDate | date }}</p>
+              <p>End date: {{ item.endDate | date }}</p>
             </div>
             <div>
               <button (click)="toggle.emit(item.id)">Toggle</button>

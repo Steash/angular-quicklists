@@ -5,10 +5,13 @@ export interface ChecklistItem {
   checklistId: string
   title: string
   checked: boolean
+  creationDate: Date
+  endDate?: Date | null
+  description?: string
 }
 
 export type AddChecklistItem = {
-  item: Omit<ChecklistItem, 'id' | 'checklistId' | 'checked'>
+  item: Omit<ChecklistItem, 'id' | 'checklistId' | 'checked' | 'creationDate'>
   checklistId: RemoveChecklist
 }
 
